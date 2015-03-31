@@ -10,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CognismServiceREST implements Serializable {
 
+    private static final Logger log = Logger.getLogger(CognismServiceREST.class);
     private static final long serialVersionUID = 1L;
 
     @Autowired
@@ -33,12 +35,11 @@ public class CognismServiceREST implements Serializable {
 
     }
 
-   
     @POST
     @Path("/post/content")
     @Consumes(MediaType.APPLICATION_JSON)
     public List<Cognitive> sendContent(String jsonObject) {
-        System.out.println("I am WEB REST");
+        log.info("CognismServiceREST: start sending content to NLP ");
         List<Cognitive> list = new ArrayList<Cognitive>();
         Integer status = 0;
         if (jsonObject == null) {
@@ -67,7 +68,7 @@ public class CognismServiceREST implements Serializable {
 
             list = sentimentExtractor.getOutputList(content.getTextValue());
             String json = new Gson().toJson(list);
-            System.out.println("LIST SIZE IS " + list.size());
+            log.info("After NLP process output list size is  " + list.size());
             return list;
         } catch (Exception e) {
             e.printStackTrace();
